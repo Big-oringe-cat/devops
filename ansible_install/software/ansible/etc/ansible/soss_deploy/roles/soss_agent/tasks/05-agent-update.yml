@@ -1,0 +1,11 @@
+---
+- name: rm agent
+  shell: rm -rf /etc/zabbix/zabbix_agentd.d/*
+- name: copy zabbix_agentd.d.tar.gz
+  copy: src=zabbix_agentd.d.tar.gz dest=/etc/zabbix/zabbix_agentd.d/
+            owner=root group=root
+- name: Uncompression zabbix_agentd.d.tar.gz*
+  shell: tar -zxf /etc/zabbix/zabbix_agentd.d/zabbix_agentd.d.tar.gz -C /etc/zabbix/zabbix_agentd.d/
+- name: Delete zabbix_agentd.d.tar.gz source file
+  shell: rm -rf /etc/zabbix/zabbix_agentd.d/zabbix_agentd.d.tar.gz
+

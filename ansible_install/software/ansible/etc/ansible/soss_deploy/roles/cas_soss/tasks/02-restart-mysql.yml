@@ -1,0 +1,10 @@
+---
+- name: cp mysqld
+  template: src=mysqld dest=/etc/init.d/mysqld owner=root group=root mode=0755 backup=yes follow=yes
+- name: Add boot start mysql server
+  shell: chkconfig --add mysqld && chkconfig --level 345 mysqld on
+- name: restart mysql server
+#  shell: /etc/init.d/mysqld restart
+  service: name=mysqld state=started
+
+

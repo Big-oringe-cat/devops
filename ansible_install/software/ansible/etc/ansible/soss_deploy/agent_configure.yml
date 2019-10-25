@@ -1,0 +1,6 @@
+---
+- hosts: agenthosts
+  remote_user: root
+  gather_facts: True
+  roles:
+    - soss_agent

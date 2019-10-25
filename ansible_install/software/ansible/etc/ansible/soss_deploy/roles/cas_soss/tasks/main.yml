@@ -1,0 +1,7 @@
+---
+#- include: 01-configure-ntp.yml
+#- include: 06-restart-etcd.yml
+#- include: 02-restart-mysql.yml
+#- include: 03-configure-snmp.yml
+- include: 04-configure-ip.yml
+#- include: 05-restart-tomcat.yml

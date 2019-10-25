@@ -1,0 +1,7 @@
+---
+
+- name: cp tomcat
+  template: src=tomcat dest=/etc/init.d/tomcat owner=root group=root mode=0755 backup=yes follow=yes
+- name: Add boot start tomcat
+  shell: chkconfig --add tomcat && chkconfig --level 2345 tomcat on
+

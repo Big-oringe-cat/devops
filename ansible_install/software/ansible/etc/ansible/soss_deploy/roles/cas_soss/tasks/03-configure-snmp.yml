@@ -1,0 +1,3 @@
+---
+- name: configure snmp profile.ini
+  template: src=profile.ini dest={{ snmp_dir }}/profile.ini owner=zabbix group=zabbix mode=0644 backup=yes follow=yes

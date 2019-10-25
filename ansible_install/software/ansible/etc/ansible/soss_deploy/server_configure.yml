@@ -1,0 +1,6 @@
+---
+- hosts: soss
+  remote_user: root
+  gather_facts: True
+  roles:
+    - cas_soss

@@ -1,0 +1,11 @@
+---
+ #- include: 01-configure-ntp.yml
+ - include: 07-install-zabbix.yml
+ - include: 02-copy-code.yml
+ - include: 03-start-zabbix.yml
+ - include: 04-add-host.yml
+ #- include: 05-agent-update.yml
+ #- include: 06-start-agent.yml
+ #- include: 08-del-host.yml
+
+   

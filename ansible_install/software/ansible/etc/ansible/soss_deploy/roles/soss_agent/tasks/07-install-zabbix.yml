@@ -1,0 +1,17 @@
+---
+- name: Copy zabbix-agent config file
+  copy: src=zabbix-agent-3.2.6-1.el7.x86_64.rpm dest=/tmp owner=root group=root mode=0644 backup=yes follow=yes
+- name: rpm zabbix-agent
+  shell: rpm -ivh /tmp/zabbix-agent-3.2.6-1.el7.x86_64.rpm --nodeps
+- name: Copy zabbix-get config file
+  copy: src=zabbix-get-3.2.6-1.el7.x86_64.rpm dest=/tmp owner=root group=root mode=0644 backup=yes follow=yes
+- name: rpm zabbix-get
+  shell: rpm -ivh /tmp/zabbix-get-3.2.6-1.el7.x86_64.rpm --nodeps
+- name: Copy zabbix-sender config file
+  copy: src=zabbix-sender-3.2.6-1.el7.x86_64.rpm dest=/tmp owner=root group=root mode=0644 backup=yes follow=yes
+- name: rpm zabbix-sender
+  shell: rpm -ivh /tmp/zabbix-sender-3.2.6-1.el7.x86_64.rpm --nodeps
+- name: Copy zabbix config file
+  copy: src=fping-3.10-4.el7.x86_64.rpm dest=/tmp owner=root group=root mode=0644 backup=yes follow=yes
+- name: rpm fping
+  shell: rpm -ivh /tmp/fping-3.10-4.el7.x86_64.rpm --nodeps

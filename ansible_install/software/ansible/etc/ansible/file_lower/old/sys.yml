@@ -1,0 +1,15 @@
+- hosts: web
+  user: root
+  vars:
+  - username: bep_conf
+  - file: config.hcode
+  - servertype: scf
+  - suffix: hcode load
+  - hostname: '{{ansible_hostname}}'
+  tasks:
+  - name: cp file
+    copy: 'src=/etc/ansible/file_lower/files/{{file}} dest=/home/{{username}}/cin/etc  owner={{username}} group={{username}} mode=744 backup=yes follow=yes'
+  - name: scf numbertab, shell: '/home/{{username}}/cin/bin/inaccess -c {{username} -m {{servertype}} - {{suffix}} >/dev/null 2>&1  && echo $? || echo $?'
+    register: result
+  - name: print debug
+    debug: 'msg="hostname:{{hostname}} username:{{username}} fail:{{result.stdout}}"'

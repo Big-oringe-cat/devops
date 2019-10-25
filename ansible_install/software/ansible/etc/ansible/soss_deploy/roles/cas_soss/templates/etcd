@@ -1,0 +1,56 @@
+#!/bin/bash
+# chkconfig: 2345 93 93
+#         description: etcd server \
+
+etcd=/home/soss/local/etcd-v3.3.8-linux-amd64/etcd
+conf=/etc/etcd/conf.yml
+log=/var/log/etcd/etcd.log
+case $1 in
+    start)
+        if [ `ps aux|grep "etcd --config-file"|grep -v "grep" |wc -l` -eq 0 ];then
+            $etcd --config-file=$conf > $log 2>&1 &
+            if [ $? -eq 0 ];then
+                echo "启动成功"
+            else
+                echo "启动失败"
+            fi
+        else
+            echo "进程已存在"
+        fi
+        ;;
+    stop)
+        if [ `ps aux|grep "etcd --config-file"|grep -v "grep" |wc -l` -eq 0 ];then
+            echo "进程不存在"
+        else
+            kill -9 `ps axu|grep "etcd --config-file"|grep -v grep|awk '{print $2}'`
+            echo "etcd关闭"
+        fi
+        ;;
+    restart)
+         if [ `ps aux|grep "etcd --config-file"|grep -v "grep" |wc -l` -eq 0 ];then
+            echo "进程不存在"
+        else
+            kill -9 `ps axu|grep "etcd --config-file"|grep -v grep|awk '{print $2}'`
+            echo "etcd关闭"
+        fi
+        if [ `ps aux|grep "etcd --config-file"|grep -v "grep" |wc -l` -eq 0 ];then
+            $etcd --config-file=$conf > $log 2>&1 &
+            if [ $? -eq 0 ];then
+                echo "启动成功"
+            else
+                echo "启动失败"
+            fi
+        else
+            echo "进程已存在"
+        fi
+        ;;
+    status)
+        if [ `ps aux|grep "etcd --config-file"|grep -v "grep" |wc -l` -eq 0 ];then
+            echo "进程不存在"
+        else
+            echo "正常运行"
+        fi
+        ;;
+    *)
+        echo "usage: start|stop|status"
+esac

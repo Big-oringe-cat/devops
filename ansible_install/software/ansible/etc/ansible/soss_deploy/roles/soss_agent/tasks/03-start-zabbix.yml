@@ -1,0 +1,5 @@
+---
+- name: start zabbix agent
+  shell: systemctl restart zabbix-agent
+- name: Add boot start zabbix agent
+  shell: systemctl enable zabbix-agent

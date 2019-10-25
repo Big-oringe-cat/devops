@@ -1,0 +1,10 @@
+name: etcd-1
+data-dir: /home/soss/local/etcd-v3.3.8-linux-amd64/data
+listen-client-urls: http://{{ soss_ip }}:2379,http://127.0.0.1:2379
+advertise-client-urls: http://{{ soss_ip }}:2379,http://127.0.0.1:2379
+listen-peer-urls: http://{{ soss_ip }}:2380
+initial-advertise-peer-urls: http://{{ soss_ip }}:2380
+initial-cluster: etcd-1=http://{{ soss_ip }}:2380
+initial-cluster-token: etcd-cluster-token
+initial-cluster-state: new
+

@@ -1,0 +1,24 @@
+- hosts: web
+  user: root
+  vars:
+  - {username: root}
+  - {file: winfep.json}
+  - {servertype: scf}
+  - {hostname: '{{ansible_hostname}}'}
+  - {set_fact: 'var1="{{ ansible_processor_vcpus }}"'}
+  tasks:
+  - {name: cp file, copy: 'src=/etc/ansible/file_lower/files/{{file}} dest=/home/{{username}}/cin/xmlwoods
+      owner={{username}} group={{username}} mode=744 backup=yes follow=yes'}
+  - {name: cat root, shell: 'grep -r {{file}} /home/{{username}}/cin/xmlwoods/root
+      >/dev/null 2>&1  && echo $?|| echo $?', register: result}
+  - {set_fact: 'var1={{result.stdout}}'}
+  - {name: loadtree, shell: '/home/{{username}}/cin/bin/inaccess -c {{username}} -m
+      {{servertype}} - xmlwoods -loadtree {{file}}> /dev/null 2>&1  && echo $? ||
+      echo $?', register: tmp, when: var1 >= "1"}
+  - {name: updatetree, shell: '/home/{{username}}/cin/bin/inaccess -c {{username}}
+      -m {{servertype}} - xmlwoods -updatetree {{file}} > /dev/null 2>&1  && echo
+      $? || echo $?', register: tmp1, when: var1 == "0"}
+  - {name: print debug, debug: 'msg="hostname:{{hostname}} username:{{username}} fail:{{tmp.stdout}}"',
+    when: var1 >= "1"}
+  - {name: print debug, debug: 'msg="hostname:{{hostname}} username:{{username}} fail:{{tmp1.stdout}}"',
+    when: var1 == "0"}

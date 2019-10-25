@@ -1,0 +1,17 @@
+- name: add zabbix hosts
+  local_action:
+    module: zabbix_host
+    server_url: "http://{{ soss_ip }}:19444"
+    login_user: "admin"
+    login_password: "cin.123456"
+    host_name: "{{ ansible_hostname }}"
+    #status: disabled
+    status: enabled
+    state: absent
+    interfaces:
+    - type: 1
+      main: 1
+      useip: 1
+      ip: "{{ ansible_all_ipv4_addresses[0] }}"
+      dns: ""
+      port: 10049

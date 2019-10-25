@@ -1,0 +1,31 @@
+---
+
+- name: configure trace 1
+  template: src=trace.config.properties  dest={{ tomcat_path }}/webapps/soss-trace/WEB-INF/classes/properties/config.properties owner=root group=root mode=0755 backup=yes follow=yes
+  
+- name: configure trace 2
+  template: src=trace.param.properties  dest={{ tomcat_path }}/webapps/soss-trace/WEB-INF/classes/properties/param.properties owner=root group=root mode=0755 backup=yes follow=yes
+
+- name: configure zabbix 1
+  template: src=zabbix.config.properties  dest={{ tomcat_path }}/webapps/soss-zabbix/WEB-INF/classes/properties/config.properties owner=root group=root mode=0755 backup=yes follow=yes 
+
+- name: configure zabbix 2
+  template: src=zabbix.monitor.properties  dest={{ tomcat_path }}/webapps/soss-zabbix/WEB-INF/classes/properties/monitor.properties owner=root group=root mode=0755 backup=yes follow=yes
+
+- name: configure web 1
+  template: src=web.db.properties  dest={{ tomcat_path }}/webapps/soss-web/WEB-INF/classes/properties/db.properties owner=root group=root mode=0755 backup=yes follow=yes
+
+- name: configure web 2
+  template: src=web.para.properties  dest={{ tomcat_path }}/webapps/soss-web/WEB-INF/classes/properties/para.properties owner=root group=root mode=0755 backup=yes follow=yes
+
+- name: configure etcd 1
+  template: src=etcd.database.properties  dest={{ tomcat_path }}/webapps/soss-etcd/WEB-INF/classes/properties/database.properties owner=root group=root mode=0755 backup=yes follow=yes
+
+- name: configure etcd 2
+  template: src=etcd.params.properties   dest={{ tomcat_path }}/webapps/soss-etcd/WEB-INF/classes/properties/params.properties owner=root group=root mode=0755 backup=yes follow=yes
+
+- name: configure webssh 1
+  template: src=webssh.remotelogin.js   dest={{ tomcat_path }}/webapps/soss-web/cms/configcenter/static/js/remotelogin.js owner=root group=root mode=0755 backup=yes follow=yes
+
+- name: configure mysql 
+  command: mysql -uroot -pmysql1331 -e "use soss;update sys_perm set perm_url = 'http://{{ soss_ip }}:6007/soss-web/cms/views/UploadIssued.html' where perm_id = '24';"

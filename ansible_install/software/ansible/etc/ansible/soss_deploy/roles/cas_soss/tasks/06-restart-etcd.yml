@@ -1,0 +1,12 @@
+---
+- name: etcd configure
+  template: src=conf.yml dest=/etc/etcd/conf.yml owner=root group=root mode=0644 backup=yes follow=yes
+- name: cp etcd
+  template: src=etcd dest=/etc/init.d/etcd owner=root group=root mode=0755 backup=yes follow=yes
+- name: Add boot start tomcat
+  shell: chkconfig --add etcd && chkconfig --level 2345 etcd on
+- name: restart etcd
+#  shell: /etc/init.d/etcd restart
+  service: name=etcd state=restarted
+
+

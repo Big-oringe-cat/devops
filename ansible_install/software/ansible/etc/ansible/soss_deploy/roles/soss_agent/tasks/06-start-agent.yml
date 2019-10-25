@@ -1,0 +1,3 @@
+---
+- name: Start zabbix service
+  shell: /etc/init.d/zabbix-agent start
