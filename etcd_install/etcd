@@ -1,0 +1,148 @@
+#!/bin/bash
+# chkconfig: 2345 93 93
+#         description: etcd server \
+
+etcd=/home/cin-soss/local/etcd-v3.3.8-linux-amd64/etcd
+conf=/etc/etcd/conf.yml
+etcd_date=`cat $conf |grep data|awk -F": " '{print $2}'`
+log=/var/log/etcd/etcd.log
+back=/backup/etcd
+function start(){
+    if [ `ps aux|grep "etcd --config-file"|grep -v "grep" |wc -l` -eq 0 ];then
+        $etcd --config-file=$conf >> $log 2>&1 &
+        if [ $? -eq 0 ];then
+            echo "启动成功"
+        else
+            echo "启动失败"
+        fi
+    else
+        echo "进程已存在"
+    fi
+}
+function stop(){
+    if [ `ps aux|grep "etcd --config-file"|grep -v "grep" |wc -l` -eq 0 ];then
+            echo "进程不存在"
+        else
+            kill -9 `ps axu|grep "etcd --config-file"|grep -v grep|awk '{print $2}'`
+            echo "etcd关闭"
+        fi
+}
+function restart(){
+    if [ `ps aux|grep "etcd --config-file"|grep -v "grep" |wc -l` -eq 0 ];then
+            echo "进程不存在"
+    else
+        kill -9 `ps axu|grep "etcd --config-file"|grep -v grep|awk '{print $2}'`
+        echo "etcd关闭"
+    fi
+    if [ `ps aux|grep "etcd --config-file"|grep -v "grep" |wc -l` -eq 0 ];then
+        $etcd --config-file=$conf >> $log 2>&1 &
+        if [ $? -eq 0 ];then
+            echo "启动成功"
+        else
+            echo "启动失败"
+        fi
+    else
+        echo "进程已存在"
+    fi
+}
+function status(){
+    if [ `ps aux|grep "etcd --config-file"|grep -v "grep" |wc -l` -eq 0 ];then
+            echo "进程不存在"
+    else
+        echo "正常运行"
+    fi
+}
+function save(){
+    local file=${1:-etcd_default_`date +%y%m%d%H%M%S`.tgz}
+    cd $etcd_date
+    tar zcf $file member/
+    mv $file /backup/etcd
+    if [ $? == 0 ];then
+        echo `date +"%Y-%m-%d %T.%N"`" I | success:备份成功，文件为"$file >> $log
+        echo "success:"$file 
+    else 
+        echo `date +"%Y-%m-%d %T.%N"`" W | fail:备份失败" >> $log
+        echo "fail"
+    fi
+}
+function load(){
+    local file=$back/$1
+    if [ ! -e ${file} ];then
+        echo "fail:文件不存在"
+    elif [[ `echo $file |awk -F/ '{print $NF}'` =~ "etcd" ]];then
+        rm -rf $etcd_date/member && tar xf $file -C $etcd_date
+        if [ $? == 0 ];then
+            echo `date +"%Y-%m-%d %T.%N"`" I | success:恢复成功,恢复的备份文件为"$file >> $log
+            echo "success"
+        else
+            echo `date +"%Y-%m-%d %T.%N"`" W | fail:恢复失败" >> $log
+            echo "fail"
+        fi
+    else
+        echo `date +"%Y-%m-%d %T.%N"`" W | fail:文件错误" >> $log
+        echo "fail"
+    fi
+}
+function del(){
+    local file=$back/$1
+    if [ ! -e $file ];then
+        echo "fail:文件不存在"
+    elif [[ `echo $file |awk -F/ '{print $NF}'` =~ "etcd" ]];then
+        rm -f  $file
+        if [ $? == 0 ];then
+            echo `date +"%Y-%m-%d %T.%N"`" I | success:删除成功,删除的备份文件为"$file >> $log
+            echo "success"
+        else
+            echo `date +"%Y-%m-%d %T.%N"`" W | fail:删除失败" >> $log
+            echo "fail"
+        fi
+    else
+        echo `date +"%Y-%m-%d %T.%N"`" W | fail:文件错误" >> $log
+        echo "fail"
+    fi
+}
+function clear(){
+    rm -rf $etcd_date/*
+    if [ $? == 0 ];then
+        echo `date +"%Y-%m-%d %T.%N"`" I | success:数据清理成功" >> $log
+        echo "success"
+    else
+        echo `date +"%Y-%m-%d %T.%N"`" W | fail:删除失败" >> $log
+        echo "fail"
+    fi
+}
+
+case $1 in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    restart)
+        restart
+        ;;
+    status)
+        status
+        ;;
+    save)
+        stop > /dev/null 2>&1
+        save $2
+        start > /dev/null 2>&1
+        ;;
+    load)
+        stop > /dev/null 2>&1
+        load $2
+        start > /dev/null 2>&1
+        ;;
+    del)
+        del $2
+        ;;
+    clear)
+        stop > /dev/null 2>&1
+        clear
+        start > /dev/null 2>&1
+        ;;
+    *)
+        echo "usage: start|stop|status|restart|save|load|del|clear"
+esac

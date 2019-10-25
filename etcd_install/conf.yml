@@ -1,0 +1,10 @@
+name: etcd-1
+data-dir: cin_dir/etcd-v3.3.8-linux-amd64/data
+listen-client-urls: http://ip:2379,http://127.0.0.1:2379
+advertise-client-urls: http://ip:2379,http://127.0.0.1:2379
+listen-peer-urls: http://ip:2380
+initial-advertise-peer-urls: http://ip:2380
+initial-cluster: etcd-1=http://ip:2380
+initial-cluster-token: etcd-cluster-token
+initial-cluster-state: new
+
